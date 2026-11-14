@@ -18,6 +18,16 @@ then paste and run the following command:
 powershell $v = '11_26H2'; $f = """$env:TEMP\auto $([CultureInfo]::InstalledUICulture) $v MediaCreationTool.bat""""; Invoke-WebRequest https://raw.githubusercontent.com/baloo-tinkering/MediaCreationTool.bat/26h2/MediaCreationTool.bat -OutFile $f; .$f
 ```
 
+The same command works for other Windows 11 releases, just change the version in `$v` to `11_24H2`, 
+`11_25H2` or `11_26H2`. Windows 11 26H2 is the default in the version dialog. Its catalog and the 
+Media Creation Tool are fetched from Microsoft when the script runs and checked against the size and 
+SHA256 hash that Microsoft provides, so the script stops instead of downloading the wrong release. 
+To skip the dialog, rename the script, e.g. `11_26H2 MediaCreationTool.bat` or `auto 26H2 MediaCreationTool.bat`.
+
+This is a fork of [geissbuehler/MediaCreationTool.bat](https://github.com/geissbuehler/MediaCreationTool.bat), 
+which in turn is based on [AveYo/MediaCreationTool.bat](https://github.com/AveYo/MediaCreationTool.bat). 
+The 26H2 support is experimental and has not been tested on all editions and languages.
+
 Except for a User Account Control prompt requesting administrator privileges, this update command 
 executes the update process automatically without any additional user input. Make sure to not 
 interact with your computer until the save dialog for the ISO file appeared. The script may stall 
