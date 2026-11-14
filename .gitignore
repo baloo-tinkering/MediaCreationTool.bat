@@ -1,3 +1,4 @@
 dev/
 $ISO$/
 *.iso
+.vscode/settings.json

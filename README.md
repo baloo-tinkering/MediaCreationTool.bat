@@ -12,10 +12,10 @@ Intel introduced SSE4.2 in the first Core i CPU generation from 2009, AMD introd
 FX processors in 2011. The Windows setup will abort the update if the CPU does not support these 
 instructions and this limitation cannot be bypassed. Use this script on your own risk!
 
-To initiate an automatic upgrade to Windows 11 25H2 on unsupported hardware, press **Windows + R**, 
+To initiate an automatic upgrade to Windows 11 26H2 on unsupported hardware, press **Windows + R**, 
 then paste and run the following command:
 ```
-powershell $v = '11_25H2'; $f = """$env:TEMP\auto $([CultureInfo]::InstalledUICulture) $v MediaCreationTool.bat""""; Invoke-WebRequest https://raw.githubusercontent.com/geissbuehler/MediaCreationTool.bat/hack25h2/MediaCreationTool.bat -OutFile $f; .$f
+powershell $v = '11_26H2'; $f = """$env:TEMP\auto $([CultureInfo]::InstalledUICulture) $v MediaCreationTool.bat""""; Invoke-WebRequest https://raw.githubusercontent.com/baloo-tinkering/MediaCreationTool.bat/26h2/MediaCreationTool.bat -OutFile $f; .$f
 ```
 
 Except for a User Account Control prompt requesting administrator privileges, this update command 

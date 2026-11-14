@@ -1,5 +1,5 @@
 @goto latest at github.com/AveYo/MediaCreationTool.bat
-:Universal MCT wrapper script for all Windows 10/11 versions from 1507 to 24H2!
+:Universal MCT wrapper script for all Windows 10/11 versions from 1507 to 26H2!
 :: Nothing but Microsoft-hosted source links and no third-party tools; script just configures an xml and starts MCT
 :: Ingenious support for business editions (Enterprise / VL) selecting language, x86, x64 or AiO inside the MCT GUI
 :: Changelog: 2024.10.10 stable
@@ -7,8 +7,8 @@
 :: - DU in 11: auto installs 22000.556 atm; older skip_11_checks, without Server label; Home offline local account
 :: on upgrade: latest build, on offline install: 11 24H2 26100.2033 / 11 23H2 22631.2861 / 11 22H2 22621.1702 / 11 21H2 22000.318 / 22H2 19045.3803 / 21H2 19044.1288 / 21H1 19043.1348 / 20H2 19042.1052
 
-::# uncomment to skip GUI dialog for MCT choice: 1507 to 11 24H2 - or rename script: "11_24H2 MediaCreationTool.bat"
-rem set MCT=2409
+::# uncomment to skip GUI dialog for MCT choice: 1507 to 11 26H2 - or rename script: "11_26H2 MediaCreationTool.bat"
+rem set MCT=2610
 
 ::# uncomment to start auto upgrade setup directly (no prompts) - or rename script: "auto 11 MediaCreationTool.bat"
 rem set /a AUTO=1
@@ -44,12 +44,12 @@ set OPTIONS=%OPTIONS% /Telemetry Disable /CompactOS Disable
 ::# comment to not unhide Enterprise for 1709+ in products.xml
 set /a UNHIDE_BUSINESS=1
 
-::# comment to not insert Enterprise esd links for 1607,1703 or update links for 1909,2004,20H2,21H2,22H2,11_21H2,11_22H2,11_23H2,11_24H2 in products.xml
+::# comment to not insert Enterprise esd links for 1607,1703 or update links for 1909,2004,20H2,21H2,22H2,11_21H2,11_22H2,11_23H2,11_24H2,11_25H2,11_26H2 in products.xml
 set /a INSERT_BUSINESS=1
 
-::# MCT Version choice dialog items and default-index [11_25H2]
-set VERSIONS=1507,1511,1607,1703,1709,1803,1809,1903,1909,20H1,20H2,21H1,21H2,22H2,11_21H2,11_22H2,11_23H2,11_24H2,11_25H2
-set /a dV=19
+::# MCT Version choice dialog items and default-index [11_26H2]
+set VERSIONS=1507,1511,1607,1703,1709,1803,1809,1903,1909,20H1,20H2,21H1,21H2,22H2,11_21H2,11_22H2,11_23H2,11_24H2,11_25H2,11_26H2
+set /a dV=20
 
 ::# MCT Preset choice dialog items and default-index [Select in MCT]
 set PRESETS=^&Auto Upgrade,Auto ^&ISO,Auto ^&USB,^&Select,MCT ^&Defaults
@@ -66,7 +66,7 @@ set "OS_ARCH=x64" & if "%PROCESSOR_ARCHITECTURE:~-2%" equ "86" if not defined PR
 
 ::# parse MCT choice from script name or commandline - accepts both formats: 1909 or 19H2 etc.
 for %%V in (1.1507 2.1511 3.1607 4.1703 5.1709 6.1803 7.1809 8.1903 8.19H1 9.1909 9.19H2 10.2004 10.20H1 11.2009 11.20H2 12.2104
- 12.21H1 13.2109 13.21H2 14.2210 14.22H2 15.2110 15.11_21H2 16.2209 16.11_22H2 17.2310 17.11_23H2 18.2409 18.11_24H2 19.11_25H2) do for %%s in (%MCT% %~n0 %*) do if /i %%~xV equ .%%~s set "MCT=%%~nV" & set "VID=%%~s"
+ 12.21H1 13.2109 13.21H2 14.2210 14.22H2 15.2110 15.11_21H2 16.2209 16.11_22H2 17.2310 17.11_23H2 18.2409 18.11_24H2 19.11_25H2 20.2610 20.26H2 20.11_26H2) do for %%s in (%MCT% %~n0 %*) do if /i %%~xV equ .%%~s set "MCT=%%~nV" & set "VID=%%~s"
 if defined MCT if not defined VID set "MCT="
 
 ::# parse AUTO from script name or commandline - starts unattended upgrade / in-place repair / cross-edition
@@ -141,6 +141,12 @@ if %MCT%0 lss 1 if %PRE%0 gtr 1 call :choices MCT "%VERSIONS%" %dV% "MCT Version
 if %MCT%0 gtr 1 if %PRE%0 lss 1 call :choices PRE "%PRESETS%"  %dP% "MCT Preset"  11 white 0x005a9e 320
 if %MCT%0 gtr 1 if %PRE%0 lss 1 goto choice-0 = cancel
 goto choice-%MCT%
+
+:choice-20
+::# 26H2 (build 26300): catalog, build label and MCT are fetched and verified at runtime - see the CATALOG snippet
+set "VER=26300" & set "VID=11_26H2" & set "CB=" & set "CT=2026/10/" & set "CC=2.1"
+set "CATALOG=1"
+goto process ::# windows 11 26H2
 
 :choice-19
 set "VER=26200" & set "VID=11_25H2" & set "CB=26200.6899.251011-1532.25h2_ge_release_svc_refresh" & set "CT=2025/10/" & set "CC=2.1"
@@ -307,7 +313,7 @@ prompt $G & (<"%~f0" (set /p _=&for /l %%s in (1,1,20) do set _=& set /p _=& cal
 for /f "delims=:" %%s in ('echo;prompt $h$s$h:^|cmd /d') do set "|=%%s"&set ">>=\..\c nul&set /p s=%%s%%s%%s%%s%%s%%s%%s<nul&popd"
 set "<=pushd "%appdata%"&2>nul findstr /c:\ /a" &set ">=%>>%&echo;" &set "|=%|:~0,1%" &set /p s=\<nul>"%appdata%\c"
 ::# (un)define main variables
-for %%s in (OPTIONS MCT XML CAB EXE VID PRE AUTO ISO EDITION KEY ARCH LANGCODE NO_UPDATE DEF AKEY) do set "%%s="
+for %%s in (OPTIONS MCT XML CAB EXE CATALOG VID PRE AUTO ISO EDITION KEY ARCH LANGCODE NO_UPDATE DEF AKEY) do set "%%s="
 for %%s in (latest_MCT.url) do if not exist %%s (echo;[InternetShortcut]&echo;URL=github.com/AveYo/MediaCreationTool.bat)>%%s
 goto Universal MCT
 
@@ -377,6 +383,15 @@ if %VER% geq 22621 (set X=11& set VIS=22H2)
 if %VER% geq 22631 (set X=11& set VIS=23H2)
 if %VER% geq 26100 (set X=11& set VIS=24H2)
 if %VER% geq 26200 (set X=11& set VIS=25H2)
+if %VER% geq 26300 (set X=11& set VIS=26H2)
+
+::# 26H2: fetch the current catalog straight from Microsoft, verified by size and SHA256; never falls back to stale media
+if defined CATALOG (
+ set "0=%~f0"
+ powershell -nop -c "try {iex ([io.file]::ReadAllText($env:0) -split '#[:]CATALOG[:]')[1]; GET_CATALOG} catch {Write-Host $_ -ForegroundColor Red; exit 1}"
+ if errorlevel 1 (echo;Windows 11 26H2 catalog preparation failed.& pause& exit /b 1)
+ for /f "usebackq delims=" %%s in ("26H2-build.txt") do set "CB=%%s"
+)
 
 ::# refresh screen
 cls & <"%~f0" (set /p _=&for /l %%s in (1,1,20) do set _=& set/p _=& call echo;%%_%%)
@@ -932,6 +947,40 @@ function DOWNLOAD ($u, $f, $p = (get-location).Path) {
 } #:DOWNLOAD:# try download url via bits, net, and http/https - snippet by AveYo, 2021
 
 ::--------------------------------------------------------------------------------------------------------------------------------
+#:CATALOG:# fetch + verify the Windows 11 26H2 products.cab and Media Creation Tool directly from Microsoft; called via powershell, never run by cmd
+function GET_CATALOG {
+  $ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  $work = (Get-Location).ProviderPath; $tmp = Join-Path $work ('cat' + [guid]::NewGuid().ToString('N')); [void](New-Item -ItemType Directory $tmp)
+  try {
+    Write-Host 'Checking Microsoft Windows 11 26H2 catalog...'
+    $body = '{"Products":"PN=Windows.Products.Cab.amd64&V=0.0.0.0","DeviceAttributes":"DUScan=1;OSVersion=10.0.26100.1"}'
+    $r = Invoke-RestMethod -Method Post -Uri 'https://fe3.delivery.mp.microsoft.com/UpdateMetadataService/updates/search/v1/bydeviceinfo/' -ContentType 'application/json' -Headers @{Accept='application/json'} -Body $body -TimeoutSec 60
+    $f = @($r.FileLocations | Where-Object { $_.FileName -eq 'products.cab' }); if ($f.Count -ne 1) { throw 'Microsoft did not return a unique products.cab.' }
+    $u = [Uri]$f[0].Url; if ($u.Host -notlike '*.delivery.mp.microsoft.com') { throw 'Unexpected catalog download host.' }
+    $cab = Join-Path $tmp 'products.cab'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $cab -TimeoutSec 120
+    # the CDN link is plain http: authenticate the bytes against the size and SHA256 received over https
+    $sha = [Security.Cryptography.SHA256]::Create(); try { $d = [Convert]::ToBase64String($sha.ComputeHash([IO.File]::ReadAllBytes($cab))) } finally { $sha.Dispose() }
+    if ((Get-Item $cab).Length -ne [long]$f[0].Size -or $d -cne $f[0].Digest) { throw 'Microsoft catalog size / SHA256 verification failed.' }
+    & "$env:SystemRoot\System32\expand.exe" -R $cab '-F:products.xml' $tmp | Out-Null; if ($LASTEXITCODE -ne 0) { throw 'Cannot extract the Microsoft catalog.' }
+    $xml = New-Object Xml.XmlDocument; $xml.XmlResolver = $null; $xml.Load((Join-Path $tmp 'products.xml'))
+    $media = @($xml.SelectNodes('//File') | Where-Object { $_.Architecture -eq 'x64' }); if ($media.Count -eq 0) { throw 'No x64 media in the Microsoft catalog.' }
+    foreach ($m in $media) { if ($m.FileName -notmatch '^26300\.\d+\.[A-Za-z0-9_.-]+\.esd$') { throw 'The current Microsoft catalog is not Windows 11 26H2 (build 26300). Stopped to avoid the wrong version.' } }
+    $cb = ($media[0].FileName -split '_CLIENT')[0]
+    $exe = Join-Path $work 'MediaCreationTool11_26H2.exe'; $ok = $false
+    if (Test-Path $exe) { $ok = (Get-AuthenticodeSignature $exe).Status -eq 'Valid' }
+    if (-not $ok) {
+      Write-Host 'Downloading Microsoft Media Creation Tool...'
+      $dl = Join-Path $tmp 'MediaCreationTool.exe'; Invoke-WebRequest -UseBasicParsing -Uri 'https://go.microsoft.com/fwlink/?linkid=2156295' -OutFile $dl -TimeoutSec 180
+      $sig = Get-AuthenticodeSignature $dl; if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation') { throw 'Media Creation Tool signature verification failed.' }
+      Move-Item $dl $exe -Force
+    }
+    Copy-Item $cab (Join-Path $work 'products11_26H2.cab') -Force
+    [IO.File]::WriteAllText((Join-Path $work '26H2-build.txt'), $cb, [Text.Encoding]::ASCII)
+    Write-Host ('Verified Windows 11 26H2 media: ' + $cb)
+  } finally { Remove-Item $tmp -Recurse -Force -ea 0 }
+} #:CATALOG:#
+
+::--------------------------------------------------------------------------------------------------------------------------------
 #:CHOICES:#  [PARAMS] indexvar "c,h,o,i,c,e,s"  [OPTIONAL]  default-index "title" fontsize backcolor forecolor winsize
 set ^ #=;$f0=[io.file]::ReadAllText($env:0); $0=($f0-split '#\:CHOICES\:' ,3)[1]; $1=$env:1-replace'([`@$])','`$1'; iex($0+$1)
 set ^ #=&set "0=%~f0"& set 1=;CHOICES %*& (for /f %%x in ('powershell -nop -c "%#%"') do set "%1=%%x")& exit /b
@@ -1031,7 +1080,7 @@ function PRODUCTS_XML { [xml]$xml = [io.file]::ReadAllText("$pwd\products.xml",[
      }}}
    }
  }
-#:: update existing FilePath entries for 1909, 2004, 2008 and insert entries for 21H2, 22H2, 11_21H2, 11_22H2, 11_23H2, 11_24H2 and 11_25H2
+#:: update existing FilePath entries for 1909, 2004, 2008 and insert entries for 21H2, 22H2, 11_21H2, 11_22H2, 11_23H2, 11_24H2, 11_25H2 and 11_26H2
  if ($insert -and $ver -gt 15063) {
    $items = $csv |group Client,Lang -AsHashTable -AsString
    if ($null -ne $items) {
